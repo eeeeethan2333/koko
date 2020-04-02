@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/jumpserver/koko/pkg/i18n"
-	"github.com/jumpserver/koko/pkg/logger"
-	"github.com/jumpserver/koko/pkg/model"
-	"github.com/jumpserver/koko/pkg/utils"
+	"github.com/eeeeethan2333/koko/pkg/i18n"
+	"github.com/eeeeethan2333/koko/pkg/logger"
+	"github.com/eeeeethan2333/koko/pkg/model"
+	"github.com/eeeeethan2333/koko/pkg/utils"
 )
 
 const (

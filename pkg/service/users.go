@@ -7,9 +7,9 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/jumpserver/koko/pkg/common"
-	"github.com/jumpserver/koko/pkg/logger"
-	"github.com/jumpserver/koko/pkg/model"
+	"github.com/eeeeethan2333/koko/pkg/common"
+	"github.com/eeeeethan2333/koko/pkg/logger"
+	"github.com/eeeeethan2333/koko/pkg/model"
 )
 
 type authResponse struct {

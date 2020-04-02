@@ -9,13 +9,13 @@ import (
 
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/jumpserver/koko/pkg/common"
-	"github.com/jumpserver/koko/pkg/config"
-	"github.com/jumpserver/koko/pkg/i18n"
-	"github.com/jumpserver/koko/pkg/logger"
-	"github.com/jumpserver/koko/pkg/model"
-	"github.com/jumpserver/koko/pkg/srvconn"
-	"github.com/jumpserver/koko/pkg/utils"
+	"github.com/eeeeethan2333/koko/pkg/common"
+	"github.com/eeeeethan2333/koko/pkg/config"
+	"github.com/eeeeethan2333/koko/pkg/i18n"
+	"github.com/eeeeethan2333/koko/pkg/logger"
+	"github.com/eeeeethan2333/koko/pkg/model"
+	"github.com/eeeeethan2333/koko/pkg/srvconn"
+	"github.com/eeeeethan2333/koko/pkg/utils"
 )
 
 type DBSwitchSession struct {

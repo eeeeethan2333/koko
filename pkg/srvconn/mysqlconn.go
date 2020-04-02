@@ -16,7 +16,7 @@ import (
 
 	"github.com/creack/pty"
 
-	"github.com/jumpserver/koko/pkg/logger"
+	"github.com/eeeeethan2333/koko/pkg/logger"
 )
 
 const (

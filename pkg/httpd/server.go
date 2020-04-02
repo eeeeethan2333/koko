@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/jumpserver/koko/pkg/config"
-	"github.com/jumpserver/koko/pkg/logger"
+	"github.com/eeeeethan2333/koko/pkg/config"
+	"github.com/eeeeethan2333/koko/pkg/logger"
 	"github.com/kataras/neffos"
 )
 

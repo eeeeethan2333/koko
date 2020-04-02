@@ -1,4 +1,4 @@
-module github.com/jumpserver/koko
+module github.com/eeeeethan2333/koko
 
 go 1.12
 

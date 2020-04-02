@@ -5,8 +5,8 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/jumpserver/koko/pkg/logger"
-	"github.com/jumpserver/koko/pkg/model"
+	"github.com/eeeeethan2333/koko/pkg/logger"
+	"github.com/eeeeethan2333/koko/pkg/model"
 )
 
 func GetUserAssets(userID string, pageSize, offset int, searches ...string) (resp model.AssetsPaginationResponse) {

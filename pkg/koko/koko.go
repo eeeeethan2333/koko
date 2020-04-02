@@ -8,12 +8,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/jumpserver/koko/pkg/config"
-	"github.com/jumpserver/koko/pkg/httpd"
-	"github.com/jumpserver/koko/pkg/i18n"
-	"github.com/jumpserver/koko/pkg/logger"
-	"github.com/jumpserver/koko/pkg/service"
-	"github.com/jumpserver/koko/pkg/sshd"
+	"github.com/eeeeethan2333/koko/pkg/config"
+	"github.com/eeeeethan2333/koko/pkg/httpd"
+	"github.com/eeeeethan2333/koko/pkg/i18n"
+	"github.com/eeeeethan2333/koko/pkg/logger"
+	"github.com/eeeeethan2333/koko/pkg/service"
+	"github.com/eeeeethan2333/koko/pkg/sshd"
 )
 
 const Version = "1.5.7"

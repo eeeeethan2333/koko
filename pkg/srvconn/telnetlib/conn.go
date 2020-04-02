@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"time"
 
-	log "github.com/jumpserver/koko/pkg/logger"
+	log "github.com/eeeeethan2333/koko/pkg/logger"
 )
 
 const prefixLen = 2

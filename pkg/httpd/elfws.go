@@ -3,7 +3,7 @@ package httpd
 import (
 	"github.com/kataras/neffos"
 
-	"github.com/jumpserver/koko/pkg/logger"
+	"github.com/eeeeethan2333/koko/pkg/logger"
 )
 
 func OnELFinderConnect(ns *neffos.NSConn, msg neffos.Message) error {

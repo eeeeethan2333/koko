@@ -4,7 +4,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/jumpserver/koko/pkg/model"
+	"github.com/eeeeethan2333/koko/pkg/model"
 )
 
 type DatabasePaginator interface {

@@ -6,11 +6,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jumpserver/koko/pkg/common"
-	"github.com/jumpserver/koko/pkg/config"
-	"github.com/jumpserver/koko/pkg/logger"
-	"github.com/jumpserver/koko/pkg/proxy"
-	"github.com/jumpserver/koko/pkg/service"
+	"github.com/eeeeethan2333/koko/pkg/common"
+	"github.com/eeeeethan2333/koko/pkg/config"
+	"github.com/eeeeethan2333/koko/pkg/logger"
+	"github.com/eeeeethan2333/koko/pkg/proxy"
+	"github.com/eeeeethan2333/koko/pkg/service"
 )
 
 func Initial() {

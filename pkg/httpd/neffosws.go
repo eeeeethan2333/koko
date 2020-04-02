@@ -10,7 +10,7 @@ import (
 	"github.com/kataras/neffos"
 	"github.com/kataras/neffos/gorilla"
 
-	"github.com/jumpserver/koko/pkg/logger"
+	"github.com/eeeeethan2333/koko/pkg/logger"
 )
 
 var upgrader = gorilla.Upgrader(gorillaws.Upgrader{

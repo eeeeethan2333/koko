@@ -8,9 +8,9 @@ import (
 
 	gossh "golang.org/x/crypto/ssh"
 
-	"github.com/jumpserver/koko/pkg/logger"
-	"github.com/jumpserver/koko/pkg/model"
-	"github.com/jumpserver/koko/pkg/srvconn/telnetlib"
+	"github.com/eeeeethan2333/koko/pkg/logger"
+	"github.com/eeeeethan2333/koko/pkg/model"
+	"github.com/eeeeethan2333/koko/pkg/srvconn/telnetlib"
 )
 
 type ServerTelnetConnection struct {

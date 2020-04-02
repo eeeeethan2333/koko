@@ -12,9 +12,9 @@ import (
 	"github.com/pkg/sftp"
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/jumpserver/koko/pkg/logger"
-	"github.com/jumpserver/koko/pkg/model"
-	"github.com/jumpserver/koko/pkg/srvconn"
+	"github.com/eeeeethan2333/koko/pkg/logger"
+	"github.com/eeeeethan2333/koko/pkg/model"
+	"github.com/eeeeethan2333/koko/pkg/srvconn"
 )
 
 func SftpHandler(sess ssh.Session) {

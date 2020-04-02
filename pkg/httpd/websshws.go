@@ -12,10 +12,10 @@ import (
 	"github.com/kataras/neffos"
 	"github.com/satori/go.uuid"
 
-	"github.com/jumpserver/koko/pkg/logger"
-	"github.com/jumpserver/koko/pkg/model"
-	"github.com/jumpserver/koko/pkg/proxy"
-	"github.com/jumpserver/koko/pkg/service"
+	"github.com/eeeeethan2333/koko/pkg/logger"
+	"github.com/eeeeethan2333/koko/pkg/model"
+	"github.com/eeeeethan2333/koko/pkg/proxy"
+	"github.com/eeeeethan2333/koko/pkg/service"
 )
 
 type proxyServer interface {
