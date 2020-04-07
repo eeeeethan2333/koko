@@ -82,6 +82,7 @@ func (ak *AccessKey) SaveToFile() error {
 }
 
 func (ak *AccessKey) Register(times int) error {
+	logger.Debug("Registering ...")
 	cf := config.GetConf()
 	name := cf.Name
 	token := cf.BootstrapToken

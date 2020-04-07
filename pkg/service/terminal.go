@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/eeeeethan2333/koko/pkg/logger"
@@ -8,6 +9,7 @@ import (
 )
 
 func RegisterTerminal(name, token, comment string) (res model.Terminal) {
+	logger.Debug("Registering Terminal: %s", name)
 	client := newClient()
 	client.Headers["Authorization"] = fmt.Sprintf("BootstrapToken %s", token)
 	data := map[string]string{"name": name, "comment": comment}
@@ -15,6 +17,9 @@ func RegisterTerminal(name, token, comment string) (res model.Terminal) {
 	if err != nil {
 		logger.Error(err)
 	}
+	resBytes, err := json.Marshal(res)
+	logger.Debug("res: ", string(resBytes))
+
 	return
 }
 

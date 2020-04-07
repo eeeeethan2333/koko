@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/eeeeethan2333/koko/pkg/config"
 	"github.com/eeeeethan2333/koko/pkg/logger"
+	"github.com/gorilla/mux"
 	"github.com/kataras/neffos"
 )
 
@@ -50,7 +50,7 @@ func StartHTTPServer() {
 		router.PathPrefix("/debug/pprof/").HandlerFunc(pprof.Index)
 	}
 	addr := net.JoinHostPort(conf.BindHost, conf.HTTPPort)
-	logger.Info("Start HTTP server at ", addr)
+	logger.Info("Starting HTTP server at ", addr)
 	httpServer = &http.Server{Addr: addr, Handler: router}
 	logger.Fatal(httpServer.ListenAndServe())
 }

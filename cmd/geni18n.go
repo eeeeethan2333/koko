@@ -27,30 +27,30 @@ var (
 	msgids      = map[string]int{}
 )
 
-func main() {
-	flag.Parse()
-	currentDomain = *domain
+// func main() {
+// 	flag.Parse()
+// 	currentDomain = *domain
 
-	// Init logger
-	log.SetFlags(0)
+// 	// Init logger
+// 	log.SetFlags(0)
 
-	// Init domain files
-	domainFiles = make(map[string]*os.File)
+// 	// Init domain files
+// 	domainFiles = make(map[string]*os.File)
 
-	// Check if dir name parameter is valid
-	log.Println(*dirName)
-	f, err := os.Stat(*dirName)
-	if err != nil {
-		log.Fatal(err)
-	}
+// 	// Check if dir name parameter is valid
+// 	log.Println(*dirName)
+// 	f, err := os.Stat(*dirName)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	// Process file or dir
-	if f.IsDir() {
-		ParseDir(*dirName)
-	} else {
-		parseFile(*dirName)
-	}
-}
+// 	// Process file or dir
+// 	if f.IsDir() {
+// 		ParseDir(*dirName)
+// 	} else {
+// 		parseFile(*dirName)
+// 	}
+// }
 
 func getDomainFile(domain string) *os.File {
 	// Return existent when available

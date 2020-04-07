@@ -14,6 +14,7 @@ import (
 )
 
 func Initial() {
+	logger.Debug("Initial...")
 	conf := config.GetConf()
 	if conf.UploadFailedReplay {
 		go uploadRemainReplay(conf.RootPath)

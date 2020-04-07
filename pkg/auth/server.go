@@ -27,6 +27,7 @@ const (
 )
 
 func checkAuth(ctx ssh.Context, password, publicKey string) (res ssh.AuthResult) {
+	logger.Debug("ctx: ", ctx)
 	username := ctx.User()
 	authMethod := "publickey"
 	action := actionAccepted
@@ -65,6 +66,7 @@ func checkAuth(ctx ssh.Context, password, publicKey string) (res ssh.AuthResult)
 }
 
 func CheckUserPassword(ctx ssh.Context, password string) ssh.AuthResult {
+	logger.Debug("check user password")
 	if !config.GetConf().PasswordAuth {
 		return ssh.AuthFailed
 	}
@@ -72,6 +74,7 @@ func CheckUserPassword(ctx ssh.Context, password string) ssh.AuthResult {
 }
 
 func CheckUserPublicKey(ctx ssh.Context, key ssh.PublicKey) ssh.AuthResult {
+	logger.Debug("check user pubkey")
 	if !config.GetConf().PublicKeyAuth {
 		return ssh.AuthFailed
 	}
@@ -95,7 +98,7 @@ func CheckMFA(ctx ssh.Context, challenger gossh.KeyboardInteractiveChallenge) (r
 
 	client, ok := ctx.Value(model.ContextKeyClient).(*service.SessionClient)
 	if !ok {
-		logger.Errorf("User %s Mfa Auth failed: not found session client.", username, )
+		logger.Errorf("User %s Mfa Auth failed: not found session client.", username)
 		return
 	}
 	value, ok := ctx.Value(model.ContextKeyConfirmRequired).(*bool)

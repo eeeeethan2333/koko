@@ -72,6 +72,7 @@ func (u *SessionClient) Authenticate(ctx context.Context) (user model.User, auth
 		"remote_addr": u.option.RemoteAddr,
 		"login_type":  u.option.LoginType,
 	}
+	logger.Debug("authenticate data: ", data)
 	var resp authResponse
 	_, err := u.client.Post(UserTokenAuthURL, data, &resp)
 	if err != nil {
@@ -104,6 +105,7 @@ func (u *SessionClient) Authenticate(ctx context.Context) (user model.User, auth
 }
 
 func (u *SessionClient) CheckUserOTP(ctx context.Context, code string) (user model.User, authStatus AuthStatus) {
+	logger.Debug("Checking user otp")
 	var err error
 	authStatus = AuthFailed
 	data := map[string]string{

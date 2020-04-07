@@ -16,15 +16,17 @@ import (
 var authClient = common.NewClient(30, "")
 
 func Initial(ctx context.Context) {
+	logger.Debug("Service init")
 	cf := config.GetConf()
 	keyPath := cf.AccessKeyFile
 	authClient.BaseHost = cf.CoreHost
 	authClient.SetHeader("X-JMS-ORG", "ROOT")
-
+	logger.Debug("Access Key File:", cf.AccessKeyFile)
 	if !path.IsAbs(cf.AccessKeyFile) {
 		keyPath = filepath.Join(cf.RootPath, keyPath)
 	}
 	ak := AccessKey{Value: cf.AccessKey, Path: keyPath}
+	logger.Debugf("Key: %s, path: %s", cf.AccessKey, keyPath)
 	_ = ak.Load()
 	authClient.Auth = ak
 	validateAccessAuth()
