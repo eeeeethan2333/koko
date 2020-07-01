@@ -3,6 +3,7 @@ package httpd
 import (
 	"errors"
 	"fmt"
+	"net"
 	"strings"
 	"sync"
 	"time"
@@ -15,23 +16,26 @@ import (
 	"github.com/eeeeethan2333/koko/pkg/service"
 )
 
+var authenticationErr = errors.New("uer is not authenticated")
+
 func NewUserWebsocketConnWithTokenUser(ns *neffos.NSConn, tokenUser model.TokenUser) (*UserWebsocketConn, error) {
 	currentUser := service.GetUserDetail(tokenUser.UserID)
 	if currentUser == nil {
 		logger.Errorf("Ws %s get user id %s err", ns.Conn.ID(), tokenUser.UserID)
-		return nil, errors.New("user id error")
+		return nil, authenticationErr
 	}
-	ns.Conn.Set("currentUser", currentUser)
 	return &UserWebsocketConn{
-		ns:                  ns,
-		User:                currentUser,
-		clients:             make(map[string]*Client),
-		dataEventChan:       make(chan []byte, 1024),
-		logoutEventChan:     make(chan []byte, 1024),
-		roomEventChan:       make(chan []byte, 1024),
-		disconnectEventChan: make(chan struct{}, 1024),
-		pongEventChan:       make(chan struct{}, 1024),
-		closed:              make(chan struct{}),
+		ns:              ns,
+		User:            currentUser,
+		clients:         make(map[string]*Client),
+		dataEventChan:   make(chan []byte, 1024),
+		logoutEventChan: make(chan []byte, 1024),
+		roomEventChan:   make(chan []byte, 1024),
+		pongEventChan:   make(chan struct{}, 1024),
+		closed:          make(chan struct{}),
+
+		shareDataEventChan: make(chan []byte, 1024),
+		Addr:               GetWebsocketAddr(ns),
 	}, nil
 }
 
@@ -52,19 +56,20 @@ func NewUserWebsocketConnWithSession(ns *neffos.NSConn) (*UserWebsocketConn, err
 	if err != nil {
 		msg := "uer is not authenticated"
 		logger.Error(msg)
-		return nil, errors.New(msg)
+		return nil, authenticationErr
 	}
-	ns.Conn.Set("currentUser", user)
 	return &UserWebsocketConn{
-		ns:                  ns,
-		User:                user,
-		clients:             make(map[string]*Client),
-		dataEventChan:       make(chan []byte, 1024),
-		logoutEventChan:     make(chan []byte, 1024),
-		roomEventChan:       make(chan []byte, 1024),
-		disconnectEventChan: make(chan struct{}, 1024),
-		pongEventChan:       make(chan struct{}, 1024),
-		closed:              make(chan struct{}),
+		ns:              ns,
+		User:            user,
+		clients:         make(map[string]*Client),
+		dataEventChan:   make(chan []byte, 1024),
+		logoutEventChan: make(chan []byte, 1024),
+		roomEventChan:   make(chan []byte, 1024),
+		pongEventChan:   make(chan struct{}, 1024),
+		closed:          make(chan struct{}),
+
+		shareDataEventChan: make(chan []byte, 1024),
+		Addr:               GetWebsocketAddr(ns),
 	}, nil
 }
 
@@ -73,15 +78,17 @@ type UserWebsocketConn struct {
 	User    *model.User
 	clients map[string]*Client
 
-	dataEventChan       chan []byte   // 1024 cap
-	logoutEventChan     chan []byte   // 1024
-	roomEventChan       chan []byte   // 1024
-	disconnectEventChan chan struct{} // 1024
-	pongEventChan       chan struct{} // 1024
-	closed              chan struct{} // 1024
+	dataEventChan   chan []byte   // 1024 cap
+	logoutEventChan chan []byte   // 1024
+	roomEventChan   chan []byte   // 1024
+	pongEventChan   chan struct{} // 1024
+	closed          chan struct{} // 1024
 
-	win ssh.Window
-	mu  sync.Mutex
+	shareDataEventChan chan []byte // 1024 cap
+
+	win  ssh.Window
+	mu   sync.Mutex
+	Addr string
 }
 
 func (u *UserWebsocketConn) AddClient(id string, client *Client) {
@@ -106,8 +113,7 @@ func (u *UserWebsocketConn) GetClient(id string) (client *Client, ok bool) {
 }
 
 func (u *UserWebsocketConn) loopHandler() {
-	logger.Infof("User %s start ws %s events handler loop.",
-		u.User.Username, u.ns.Conn.ID())
+	logger.Infof("Ws %s start handler events loop.", u.ns.Conn.ID())
 	tick := time.NewTicker(30 * time.Second)
 	defer tick.Stop()
 	for {
@@ -125,21 +131,21 @@ func (u *UserWebsocketConn) loopHandler() {
 		case roomMsg := <-u.roomEventChan:
 			event = "room"
 			data = roomMsg
+		case shareData := <-u.shareDataEventChan:
+			event = "shareRoomData"
+			data = shareData
 
 		case <-u.pongEventChan:
 			event = "pong"
 			data = []byte("")
 
-		case <-u.disconnectEventChan:
-			event = "disconnect"
-			data = []byte("")
 		case <-tick.C:
 			event = "ping"
 			data = []byte("")
 			// send ping event
 		case <-u.closed:
-			logger.Infof("User %s stop ws %s events handler loop",
-				u.User.Username, u.ns.Conn.ID())
+			logger.Infof("Ws %s stop handler events loop",
+				u.ns.Conn.ID(), u.User.Name)
 			return
 		}
 		u.ns.Emit(event, data)
@@ -158,11 +164,12 @@ func (u *UserWebsocketConn) SendRoomEvent(data []byte) {
 	u.roomEventChan <- data
 }
 
+func (u *UserWebsocketConn) SendShareRoomDataEvent(data []byte) {
+	u.shareDataEventChan <- data
+}
+
 func (u *UserWebsocketConn) SendPongEvent() {
 	u.pongEventChan <- struct{}{}
-}
-func (u *UserWebsocketConn) SendDisconnectEvent() {
-	u.disconnectEventChan <- struct{}{}
 }
 
 func (u *UserWebsocketConn) ReceiveDataEvent(data DataMsg) error {
@@ -212,6 +219,15 @@ func (u *UserWebsocketConn) Close() {
 	}
 }
 
+func (u *UserWebsocketConn) CheckShareRoomWritePerm(shareRoomID string) bool {
+	// todo: check current user has pem to write
+	return false
+}
+
+func (u *UserWebsocketConn) CheckShareRoomReadPerm(shareRoomID string) bool {
+	return service.JoinRoomValidate(u.User.ID, shareRoomID)
+}
+
 type WebsocketManager struct {
 	userCons map[string]*UserWebsocketConn
 	mu       sync.Mutex
@@ -246,4 +262,21 @@ func (m *WebsocketManager) GetWebsocketData() map[string]interface{} {
 
 var websocketManager = &WebsocketManager{
 	userCons: make(map[string]*UserWebsocketConn),
+}
+
+func GetWebsocketAddr(ns *neffos.NSConn) string {
+	var addr string
+	request := ns.Conn.Socket().Request()
+	header := request.Header
+	remoteAddr := header.Get("X-Forwarded-For")
+	if remoteAddr == "" {
+		if host, _, err := net.SplitHostPort(request.RemoteAddr); err == nil {
+			addr = host
+		} else {
+			addr = request.RemoteAddr
+		}
+	} else {
+		addr = strings.Split(remoteAddr, ",")[0]
+	}
+	return addr
 }

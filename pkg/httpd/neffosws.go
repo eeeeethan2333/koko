@@ -1,7 +1,6 @@
 package httpd
 
 import (
-	"context"
 	"net/http"
 	"time"
 
@@ -39,6 +38,8 @@ var wsEvents = neffos.WithTimeout{
 			"logout": OnLogoutHandler,
 			"token":  OnTokenHandler,
 			"ping":   OnPingHandler,
+
+			"shareRoom": OnShareRoom,
 		},
 		"elfinder": neffos.Events{
 			neffos.OnNamespaceConnected:  OnELFinderConnect,
@@ -58,10 +59,6 @@ func neffosOnUpgradeError(err error) {
 
 func neffosOnConnect(c *neffos.Conn) error {
 	if c.WasReconnected() {
-		namespace := c.Socket().Request().Header.Get("X-Namespace")
-		if namespace != "" {
-			_, _ = c.Connect(context.TODO(), "ssh")
-		}
 		logger.Debugf("ws %s reconnected, with tries: %d", c.ID(), c.ReconnectTries)
 	} else {
 		logger.Debugf("A new ws %s arrive", c.ID())
@@ -74,6 +71,6 @@ func neffosOnDisconnect(c *neffos.Conn) {
 	if conn, ok := websocketManager.GetUserCon(c.ID()); ok {
 		conn.Close()
 		websocketManager.DeleteUserCon(c.ID())
-		logger.Infof("User %s ws %s disconnect.", conn.User.Username, c.ID())
+		logger.Infof("User %s ws %s disconnect.", conn.User.Name, c.ID())
 	}
 }

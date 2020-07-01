@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/eeeeethan2333/koko/pkg/config"
+	"github.com/eeeeethan2333/koko/pkg/exchange"
 	"github.com/eeeeethan2333/koko/pkg/httpd"
 	"github.com/eeeeethan2333/koko/pkg/i18n"
 	"github.com/eeeeethan2333/koko/pkg/logger"
@@ -16,7 +17,7 @@ import (
 	"github.com/eeeeethan2333/koko/pkg/sshd"
 )
 
-const Version = "1.5.7"
+const Version = "2.0.0"
 
 type Coco struct {
 }
@@ -32,12 +33,13 @@ func (c *Coco) Start() {
 func (c *Coco) Stop() {
 	sshd.StopServer()
 	httpd.StopHTTPServer()
+	exchange.StopExchange()
 	logger.Info("Quit The KoKo")
 }
 
-func RunForever() {
-	logger.Debug("Runforever...")
+func RunForever(confPath string) {
 	ctx, cancelFunc := context.WithCancel(context.Background())
+	config.Initial(confPath)
 	bootstrap(ctx)
 	gracefulStop := make(chan os.Signal, 1)
 	signal.Notify(gracefulStop, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
@@ -49,10 +51,9 @@ func RunForever() {
 }
 
 func bootstrap(ctx context.Context) {
-	logger.Debug("bootstrap")
-	config.Initial()
 	i18n.Initial()
 	logger.Initial()
 	service.Initial(ctx)
+	exchange.Initial(ctx)
 	Initial()
 }
